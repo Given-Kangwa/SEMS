@@ -49,3 +49,9 @@ In Base44, call the API using the deployed base URL:
 - `POST /api/sensor-data` — submit a reading with `room_id`, `occupancy`, `people_count`, `mmwave_presence`, `light`, `fan`, `ac`, `voltage`, `current`, `power`, and `energy_kwh`.
 
 The simulator is the current data producer. Avoid running it against production data unless sample data is intended. The API has no user authentication or appliance-control endpoint yet, so this prototype is for trusted testing rather than a public production deployment.
+
+## Deploy API and database on Render
+
+The included `render.yaml` defines a free Render web service and PostgreSQL database for a prototype. Commit and push this repository to GitHub, then in Render choose **New → Blueprint** and connect the repository. During setup, set `BASE44_ALLOWED_ORIGINS` to your Base44 app's exact origin (for example, `https://your-app.base44.app`). When deployment completes, Render shows the API's public `onrender.com` URL; open `/docs` on that URL to check the API.
+
+Render's free web service may sleep when idle, and its free PostgreSQL database expires 30 days after creation. Upgrade the database or move it elsewhere before expiry if you need to keep readings. See [Render's free instance limits](https://render.com/docs/free).

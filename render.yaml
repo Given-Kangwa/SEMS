@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: sems-api
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sems-db
+          property: connectionString
+      - key: BASE44_ALLOWED_ORIGINS
+        sync: false
+
+databases:
+  - name: sems-db
+    databaseName: SEMS_db
+    user: sems_user
+    plan: free
+    region: frankfurt
