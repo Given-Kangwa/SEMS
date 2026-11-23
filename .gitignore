@@ -24,3 +24,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Stray nested repository with no initial commit; keep it out of the SEMS repo.
+/SEMS/

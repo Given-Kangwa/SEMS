@@ -1,14 +1,16 @@
 """Stateful software simulator for the future ESP32-based SEMS prototype."""
 
 import random
+import os
 import time
 from dataclasses import dataclass, field
 
 import requests
 
 
-API_URL = "http://127.0.0.1:8000/api/sensor-data"
-SEND_INTERVAL_SECONDS = 5
+API_BASE_URL = os.getenv("SEMS_API_URL", "http://127.0.0.1:8000").rstrip("/")
+API_URL = f"{API_BASE_URL}/api/sensor-data"
+SEND_INTERVAL_SECONDS = max(1, int(os.getenv("SIMULATOR_INTERVAL_SECONDS", "2")))
 
 
 @dataclass

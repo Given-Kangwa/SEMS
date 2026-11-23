@@ -2,7 +2,10 @@
 
 from datetime import datetime, timezone
 
+import os
+
 from fastapi import Depends, FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -14,6 +17,24 @@ app = FastAPI(
     title="SEMS API",
     description="Backend API for the Smart Energy Management System prototype.",
     version="0.1.0",
+)
+
+# Set BASE44_ALLOWED_ORIGINS to the deployed Base44 app origin(s), comma-separated.
+# Local origins keep browser-based development convenient when this is unset.
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "BASE44_ALLOWED_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000",
+    ).split(",")
+    if origin.strip()
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 
@@ -84,7 +105,7 @@ def get_room(room_id: RoomID, db: Session = Depends(get_db)) -> RoomStatus:
     return RoomStatus.model_validate(reading, from_attributes=True)
 
 
-@app.post("/api/sensor-data", response_model=RoomStatus, status_code=201)
+@app.post("/api/sensor-data", response_model=SensorReadingResponse, status_code=201)
 def receive_sensor_data(
     sensor_data: SensorDataInput,
     db: Session = Depends(get_db),
