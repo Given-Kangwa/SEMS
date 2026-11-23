@@ -19,7 +19,7 @@ services:
 
 databases:
   - name: sems-db
-    databaseName: SEMS_db
+    databaseName: sems_db
     user: sems_user
     plan: free
     region: frankfurt
