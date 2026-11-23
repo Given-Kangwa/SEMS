@@ -26,8 +26,12 @@ def required_setting(name: str) -> str:
 
 database_url = os.getenv("DATABASE_URL")
 if database_url:
-    # Managed PostgreSQL hosts provide a connection URL; SQLAlchemy selects
-    # psycopg2 from requirements.txt for the postgresql:// scheme.
+    # Render supplies postgresql:// (or legacy postgres://). Pin the driver in
+    # the URL because SQLAlchemy 2.1 otherwise defaults to psycopg (v3).
+    if database_url.startswith("postgres://"):
+        database_url = "postgresql+psycopg2://" + database_url[len("postgres://") :]
+    elif database_url.startswith("postgresql://"):
+        database_url = "postgresql+psycopg2://" + database_url[len("postgresql://") :]
     engine = create_engine(database_url, pool_pre_ping=True)
 else:
     # Locally, build the URL safely so special characters in the password work.
